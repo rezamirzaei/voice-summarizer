@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" ng-app="voiceApp">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voice Summarize Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+  <body ng-controller="MainController as vm">
+    <div class="bg-shape bg-shape-a"></div>
+    <div class="bg-shape bg-shape-b"></div>
+
+    <main class="layout">
+      <section class="hero">
+        <p class="hero-kicker">Local AI Audio Workflow</p>
+        <h1>Summarize One Hour of Voice Into Minutes</h1>
+        <p>
+          Upload your recording, choose summary genre and target duration, and receive a concise output in the same
+          speaker voice.
+        </p>
+      </section>
+
+      <section class="card">
+        <form name="summaryForm" ng-submit="vm.submit()" novalidate>
+          <label class="field-label" for="audio-file">Audio File</label>
+          <input id="audio-file" class="file-input" type="file" accept="audio/*" onchange="angular.element(this).scope().vm.onFileSelected(this.files)" required />
+
+          <div class="grid">
+            <div>
+              <label class="field-label" for="genre">Genre</label>
+              <select id="genre" ng-model="vm.form.genre" ng-options="genre as genre for genre in vm.genres" required></select>
+            </div>
+            <div>
+              <label class="field-label" for="minutes">Target Minutes</label>
+              <input id="minutes" type="number" min="1" max="20" ng-model="vm.form.targetMinutes" required />
+            </div>
+          </div>
+
+          <button type="submit" ng-disabled="vm.isSubmitting">{{ vm.isSubmitting ? 'Processing...' : 'Generate Summary Voice' }}</button>
+        </form>
+
+        <div class="status" ng-if="vm.statusText">
+          <h2>Status</h2>
+          <p>{{ vm.statusText }}</p>
+        </div>
+
+        <div class="result" ng-if="vm.job.summary_text">
+          <h2>Summary Text</h2>
+          <p>{{ vm.job.summary_text }}</p>
+        </div>
+
+        <div class="result" ng-if="vm.audioUrl">
+          <h2>Generated Voice</h2>
+          <audio controls ng-src="{{ vm.audioUrl }}"></audio>
+          <a class="download" ng-href="{{ vm.audioUrl }}" target="_blank" rel="noopener">Download Audio</a>
+        </div>
+
+        <div class="error" ng-if="vm.errorMessage">
+          <p>{{ vm.errorMessage }}</p>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      window.__APP_CONFIG__ = {
+        apiBaseUrl: "http://localhost:8000/api/v1",
+      };
+    </script>
+    <script src="vendor/angular.min.js"></script>
+    <script src="app/app.module.js"></script>
+    <script src="app/services/api.service.js"></script>
+    <script src="app/controllers/main.controller.js"></script>
+  </body>
+</html>
