@@ -31,18 +31,18 @@ jobs:
             frontend:
               - "frontend/**"
             backend_docker:
-              - "backend/**"
-              - "pyproject.toml"
               - "infra/docker/backend.Dockerfile"
               - "infra/docker/docker-compose.yml"
               - ".dockerignore"
               - ".env.example"
+              - "pyproject.toml"
             frontend_docker:
-              - "frontend/**"
               - "infra/docker/frontend.Dockerfile"
               - "infra/docker/docker-compose.yml"
               - ".dockerignore"
               - ".env.example"
+              - "frontend/package.json"
+              - "frontend/package-lock.json"
             ci:
               - ".github/workflows/**"
 
